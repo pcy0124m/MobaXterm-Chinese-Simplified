@@ -69,19 +69,25 @@ jobs:
 
       - name: Update Actions Variables
         if: ${{ vars.MXT_VERSION != steps.extract.outputs.version }}
-        run: |
-          VERSION=${{ steps.extract.outputs.version }}
-          mxt_version=$(gh api repos/${{ github.repository }}/actions/variables/MXT_VERSION --jq '.value' 2>/dev/null || echo "00.0")
-          echo mxt_version: $mxt_version
-          if [ "$VERSION" != "$mxt_version" ]; then
-            gh api -X PUT repos/${{ github.repository }}/actions/variables/MXT_VERSION \
-              -f name="MXT_VERSION" \
-              -f value="$VERSION" \
-              -f visible=true
-            echo "actions.variables.MXT_VERSION is set to $VERSION"
-          else
-            echo "actions.variables.MXT_VERSION is already up to date."
-          fi
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const version = '${{ steps.extract.outputs.version }}';
+            const currentVersion = process.env.MXT_VERSION_VAR || '00.0';
+            if (version !== currentVersion) {
+              await github.rest.actions.updateRepoVariable({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'MXT_VERSION',
+                value: version
+              });
+              console.log(`actions.variables.MXT_VERSION is set to ${version}`);
+            } else {
+              console.log('actions.variables.MXT_VERSION is already up to date.');
+            }
+        env:
+          MXT_VERSION_VAR: ${{ vars.MXT_VERSION }}
       
       - name: Commit MXT Badge
         if: steps.gen_mxt_bdg.outcome == 'success'

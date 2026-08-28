@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "MobaXterm 发布版本更新"
-          from: ${{ secrets.SMTP_USERNAME }}@126.com
+          from: pcy831121@126.com
           to: ${{ secrets.EMAIL }}
           body: |
               MobaXterm 已发布新的软件版本 v${{ steps.extract.outputs.version }}

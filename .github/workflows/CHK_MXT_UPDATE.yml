@@ -1,4 +1,4 @@
-name: Check MobaXterm Latest Version
+﻿name: Check MobaXterm Latest Version
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 on:
@@ -36,12 +36,12 @@ jobs:
         uses: dawidd6/action-send-mail@v4
         with:
           connection_url: ${{ secrets.CONNECTION }}
-          
+          secure: true
           subject: "MobaXterm 发布版本更新"
           from: Github Actions
           to: ${{ secrets.EMAIL }}
           body: |
-              MobaXterm 已发布新的软件版本 v${{ steps.extract.outputs.version }} 
+              MobaXterm 已发布新的软件版本 v${{ steps.extract.outputs.version }}
       
       - name: Generate MXT Badge
         id: gen_mxt_bdg
@@ -85,4 +85,3 @@ jobs:
           author_email: actions@github.com
           add: "assets/mxt_badge.svg"
           message: "update version badge to v${{ steps.extract.outputs.version }}"
-      

@@ -71,7 +71,7 @@ jobs:
           mxt_version=$(gh api repos/${{ github.repository }}/actions/variables/MXT_VERSION --jq '.value' 2>/dev/null || echo "00.0")
           echo mxt_version: $mxt_version
           if [ "$VERSION" != "$mxt_version" ]; then
-            gh api -X PATCH repos/${{ github.repository }}/actions/variables/MXT_VERSION \
+            gh api -X PUT repos/${{ github.repository }}/actions/variables/MXT_VERSION \
               -f name="MXT_VERSION" \
               -f value="$VERSION" \
               -f visible=true

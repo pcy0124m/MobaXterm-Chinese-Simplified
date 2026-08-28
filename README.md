@@ -47,7 +47,7 @@
 
 - 官网：[MobaXterm](https://mobaxterm.mobatek.net/) 
 
-- 汉化：请从 [Releases](https://github.com/RipplePiam/MobaXterm-Chinese-Simplified/releases) 下载
+- 汉化：请从 [Releases](https://github.com/pcy0124m/MobaXterm-Chinese-Simplified/releases) 下载
 
 - 介绍： [独家.MobaXterm v24.2 全能终端连接工具中文版](https://blog.csdn.net/qq_27677599/article/details/141603558)
 
@@ -109,6 +109,6 @@
 
 不保证实时更新：
 
-> MobaXterm Latest Version 24.3 (2024-10-30)
+> MobaXterm Latest Version 26.4 (2026-08-28)
 >
 > 汉化最新版本：24.3, 总进度 100%

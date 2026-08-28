@@ -59,7 +59,7 @@ jobs:
           body: |
               MobaXterm 已发布新的软件版本 v${{ steps.extract.outputs.version }}
       
-      - name: Generate MXT Badge
+      - name: Generate MXT Badge and Update README
         id: gen_mxt_bdg
         if: ${{ steps.current.outputs.current_version != steps.extract.outputs.version }}
         run: |
@@ -78,11 +78,16 @@ jobs:
           </svg>
           EOF
 
-      - name: Save version and commit badge
+          # 更新 README 中的版本信息和下载链接
+          DOWNLOAD_URL="https://mobaxterm.mobatek.net/download-home-edition.html"
+          sed -i "s|MobaXterm Latest Version [0-9.]* (.*|MobaXterm Latest Version $VERSION ($(date +%Y-%m-%d))|" README.md
+          echo "README updated with version $VERSION"
+
+      - name: Save version and commit changes
         if: steps.gen_mxt_bdg.outcome == 'success'
         uses: EndBug/add-and-commit@v9.1.4
         with:
           author_name: Github Actions
           author_email: actions@github.com
-          add: "assets/mxt_badge.svg .version"
-          message: "update version badge to v${{ steps.extract.outputs.version }}"
+          add: "assets/mxt_badge.svg .version README.md"
+          message: "update to v${{ steps.extract.outputs.version }}"

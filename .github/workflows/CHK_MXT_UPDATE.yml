@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
 
     steps:
       - name: checkout repo
@@ -34,8 +33,19 @@ jobs:
           echo "Latest MobaXterm version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Read current version
+        id: current
+        run: |
+          if [ -f .version ]; then
+            CURRENT=$(cat .version)
+          else
+            CURRENT="00.0"
+          fi
+          echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT"
+
       - name: Send Email
-        if: ${{ vars.MXT_VERSION != steps.extract.outputs.version }}
+        if: ${{ steps.current.outputs.current_version != steps.extract.outputs.version }}
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: smtp.126.com
@@ -51,10 +61,11 @@ jobs:
       
       - name: Generate MXT Badge
         id: gen_mxt_bdg
-        if: ${{ vars.MXT_VERSION != steps.extract.outputs.version }}
+        if: ${{ steps.current.outputs.current_version != steps.extract.outputs.version }}
         run: |
           VERSION=${{ steps.extract.outputs.version }}
           mkdir -p assets
+          echo "$VERSION" > .version
           cat > assets/mxt_badge.svg <<EOF
           <svg width="195" height="20" xmlns="http://www.w3.org/2000/svg">
            <g class="layer">
@@ -67,33 +78,11 @@ jobs:
           </svg>
           EOF
 
-      - name: Update Actions Variables
-        if: ${{ vars.MXT_VERSION != steps.extract.outputs.version }}
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const version = '${{ steps.extract.outputs.version }}';
-            const currentVersion = process.env.MXT_VERSION_VAR || '00.0';
-            if (version !== currentVersion) {
-              await github.rest.actions.updateRepoVariable({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: 'MXT_VERSION',
-                value: version
-              });
-              console.log(`actions.variables.MXT_VERSION is set to ${version}`);
-            } else {
-              console.log('actions.variables.MXT_VERSION is already up to date.');
-            }
-        env:
-          MXT_VERSION_VAR: ${{ vars.MXT_VERSION }}
-      
-      - name: Commit MXT Badge
+      - name: Save version and commit badge
         if: steps.gen_mxt_bdg.outcome == 'success'
         uses: EndBug/add-and-commit@v9.1.4
         with:
           author_name: Github Actions
           author_email: actions@github.com
-          add: "assets/mxt_badge.svg"
+          add: "assets/mxt_badge.svg .version"
           message: "update version badge to v${{ steps.extract.outputs.version }}"

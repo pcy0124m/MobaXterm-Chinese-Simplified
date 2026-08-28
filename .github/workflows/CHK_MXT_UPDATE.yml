@@ -79,8 +79,10 @@ jobs:
           EOF
 
           # 更新 README 中的版本信息和下载链接
-          DOWNLOAD_URL="https://mobaxterm.mobatek.net/download-home-edition.html"
-          sed -i "s|MobaXterm Latest Version [0-9.]* (.*|MobaXterm Latest Version $VERSION ($(date +%Y-%m-%d))|" README.md
+          # 更新项目看板中的版本号
+          sed -i "s|MobaXterm Latest Version [0-9.]* ([0-9-]*)|MobaXterm Latest Version $VERSION ($(date +%Y-%m-%d))|" README.md
+          # 更新汉化下载链接指向自己仓库的 Releases
+          sed -i "s|https://github.com/RipplePiam/MobaXterm-Chinese-Simplified/releases|https://github.com/pcy0124m/MobaXterm-Chinese-Simplified/releases|g" README.md
           echo "README updated with version $VERSION"
 
       - name: Save version and commit changes

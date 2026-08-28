@@ -1,6 +1,6 @@
 name: Check MobaXterm Latest Version
 env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 on:
   schedule:
     - cron: '0 2 * * *' # 每天 UTC 时间 02:00 (北京时间 10:00)

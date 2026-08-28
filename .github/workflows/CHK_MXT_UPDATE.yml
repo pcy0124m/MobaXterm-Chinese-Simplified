@@ -1,4 +1,4 @@
-﻿name: Check MobaXterm Latest Version
+name: Check MobaXterm Latest Version
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 on:
@@ -35,10 +35,13 @@ jobs:
         if: ${{ vars.MXT_VERSION != steps.extract.outputs.version }}
         uses: dawidd6/action-send-mail@v4
         with:
-          connection_url: ${{ secrets.CONNECTION }}
+          server_address: smtp.126.com
+          server_port: 465
           secure: true
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
           subject: "MobaXterm 发布版本更新"
-          from: Github Actions
+          from: ${{ secrets.SMTP_USERNAME }}@126.com
           to: ${{ secrets.EMAIL }}
           body: |
               MobaXterm 已发布新的软件版本 v${{ steps.extract.outputs.version }}

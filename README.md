@@ -109,6 +109,6 @@
 
 不保证实时更新：
 
-> MobaXterm Latest Version 26.4 (2026-08-28)
+> MobaXterm Latest Version 26.5 (2026-09-12)
 >
 > 汉化最新版本：24.3, 总进度 100%
